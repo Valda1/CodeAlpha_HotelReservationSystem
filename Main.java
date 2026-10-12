@@ -16,7 +16,7 @@ public class Main {
    
     switch(choice) {
         case 0:
-            //printOptions();
+            printOptions();
             break;
         case 1:
             //makeReservation();
@@ -31,8 +31,9 @@ public class Main {
             //checkAvailability();
             break;
     }
+}
    
-    /*public static void printOptions () {
+    public static void printOptions () {
         System.out.println("\nPress");
         System.out.println("\t 0 - To print choice options");
         System.out.println("\t 1 - Make a reservation");
@@ -41,6 +42,5 @@ public class Main {
         System.out.println("\t 4 - Check room's availability");
         //System.out.println("\t 7 - To log out");
     }
-  }*/
-}
+  
 }
