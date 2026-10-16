@@ -4,14 +4,17 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.sql.ResultSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DB {
 
     final String dbURL = "jdbc:mysql://localhost:3306/java";
-    final String user = "root";
+    final String user = "";
     final String password = "";
 
     private int roomNumber;
+    private String fullName;
 
     public void makeReservation() {
         Reservation newReservation = new Reservation();
@@ -29,15 +32,29 @@ public class DB {
        
             ResultSet resultSet = preparedStatement.executeQuery();
        
-            Boolean isAvailable = resultSet.getBoolean("available");
+            boolean isAvailable = resultSet.getBoolean("available");
+           
+            boolean x = true;
+           
+            while (x) {
+                if (resultSet.next()) {
+                    if (isAvailable = true) {
+                        System.out.println("Room is available");
+                        x = false;
+                       
+                        System.out.println("Please enter your full name: ");
+                        fullName = scanner.nextLine();
+
+                        Pattern pattern = Pattern.compile("^[a-zA-Z]+$");
+                        Matcher matcher = pattern.matcher(fullName);
+
+                    } else {
+                        System.out.println("This room is not available. Please choose another room!");
+                        System.out.println(" ");
+                    }
+                }
+            }
        
-            if (resultSet.next()) {
-            if (isAvailable = true) {
-                System.out.println("Room is available");
-            } else {
-                System.out.println("This room is not available. Please choose another room!");
-            }
-            }
 
         } catch (SQLException e){
             System.out.println("Something went wrong! " + e);
