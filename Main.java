@@ -1,4 +1,7 @@
 import java.util.Scanner;
+import java.sql.SQLException;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,9 +12,9 @@ public class Main {
     System.out.println("______________________");
     //System.out.println("How can we help you today?");
     System.out.println("What would you like to do?");
-    //printOptions();
+    printOptions();
    
-    //choice = scanner.nextInt();
+    choice = scanner.nextInt();
     //scanner.nextLine();
    
     switch(choice) {
@@ -19,7 +22,8 @@ public class Main {
             printOptions();
             break;
         case 1:
-            //makeReservation();
+            DB myData = new DB();
+            myData.makeReservation();
             break;
         case 2:
             //cancelReservation();
@@ -44,3 +48,20 @@ public class Main {
     }
   
 }
+
+/*public class Main {
+    public static void main(String[] args) {
+        String url = "jdbc:mysql://localhost:3306/JAVA_hotel_reservation_system";
+        String user = "root";
+        String password = "root";
+
+        try (Connection connection =
+                 DriverManager.getConnection(url, user, password)) {
+
+            System.out.println("Connected to MySQL successfully!");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}*/
