@@ -79,5 +79,21 @@ public class DB {
         }
     }
 
+    public void saveReservation(Connection conn) throws SQLException {
+        String updateSQL = "UPDATE rooms SET isAvailable = FALSE WHERE room_id = ? AND isAvailable =TRUE";
+
+        String insertSQL = "INSERT INTO reservations (reservation_id, room_id, date, full_name) VALUES (?, ?, ?, ?)";
+
+        PreparedStatement preparedStatement = conn.prepareStatement(updateSQL);
+
+        try{
+            try(PreparedStatement updateStatement = conn.prepareStatement(updateSQL)){
+                updateStatement.setInt(1, roomNumber);
+            }
+        }
+
+
+    }
+
    
 }
