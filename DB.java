@@ -17,7 +17,7 @@ public class DB {
     private String fullName;
 
     
-    /*public void makeReservation() {
+    public void selectRoom() {
         Reservation newReservation = new Reservation();
         Scanner scanner = new Scanner(System.in);
 
@@ -57,79 +57,27 @@ public class DB {
         } catch (SQLException e) {
             System.out.println("Something went wrong! " + e.getMessage());
         }
-    }*/
-
-
-    public void makeReservation() {
-        Reservation newReservation = new Reservation();
-        Scanner scanner = new Scanner(System.in);
-
-        try (Connection conn = DriverManager.getConnection(dbURL, user, password)) {
-            System.out.println("Please choose the number of the room you would like to book: ");
-            roomNumber = scanner.nextInt();
-
-            String sql = "SELECT isAvailable FROM rooms WHERE room_id = ?";
-
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
-       
-            preparedStatement.setInt(1, roomNumber);
-       
-            ResultSet resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-       
-            boolean isAvailable = resultSet.getBoolean("isAvailable");
-           
-            boolean x = true;
-           
-            while (x) {
-                if (resultSet.next()) {
-                    if (isAvailable == true) {
-                        System.out.println("Room is available");
-                        x = false;
-                       
-                        System.out.println("Please enter your full name: ");
-                        //fullName = scanner.nextLine();
-                        fullName = scanner.next();
-
-                        Pattern pattern = Pattern.compile("^[a-zA-Z]+$");
-                        Matcher matcher = pattern.matcher(fullName);
-                        boolean matches = matcher.matches();
-
-                        boolean y = true;
-
-                        while(y){
-                            if(matches){
-                               newReservation.setFullName(fullName);
-                               y = false; 
-                            }else{
-                                System.out.println("Please enter a valid name:");
-                                fullName = scanner.next();
-                            }
-
-                        }
- 
-                        if(matches) {
-                            newReservation.setFullName(fullName);
-                        }else{
-                            System.out.println("Please enter a valid name:");
-                            fullName = scanner.next();
-                        }
-
-                    } else {
-                        System.out.println("This room is not available. Please choose another room!");
-                        //x = true;
-                        //System.out.println(" ");
-                        roomNumber = scanner.nextInt();
-                    }
-                }
-            }
-       
-
-        } catch (SQLException e){
-            System.out.println("Something went wrong! " + e);
-        }
-
-
     }
+
+    public void collectUserInfo(){
+        Scanner scanner = new Scanner(System.in);
+        boolean matches = false;
+
+        while(!matches){
+            System.out.println("Please enter your full name:");
+            fullName = scanner.nextLine().trim();
+            Pattern pattern = Pattern.compile("[a-zA-Z]+(?:[ '-][a-zA-Z]+)*");
+            Matcher matcher = pattern.matcher(fullName);
+            matches = matcher.matches();
+
+            if(matches){
+                System.out.println("Name accepted!");
+                System.out.println("You have succesfully made reservation! Thank you!");
+            }else{
+                System.out.println("The name entered in not valid. Try again!");
+            }
+        }
+    }
+
    
 }
