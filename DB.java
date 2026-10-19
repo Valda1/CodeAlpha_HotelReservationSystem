@@ -82,18 +82,46 @@ public class DB {
     public void saveReservation(Connection conn) throws SQLException {
         String updateSQL = "UPDATE rooms SET isAvailable = FALSE WHERE room_id = ? AND isAvailable =TRUE";
 
-        String insertSQL = "INSERT INTO reservations (reservation_id, room_id, date, full_name) VALUES (?, ?, ?, ?)";
+        String insertSQL = "INSERT INTO reservations (room_id, date, full_name) VALUES (?, ?, ?)";
 
-        PreparedStatement preparedStatement = conn.prepareStatement(updateSQL);
+        //conn.setAutoCommit(false);
+
+        //PreparedStatement preparedStatement = conn.prepareStatement(updateSQL);
 
         try{
             try(PreparedStatement updateStatement = conn.prepareStatement(updateSQL)){
                 updateStatement.setInt(1, roomNumber);
+
+                int rowsUpdated = updateStatement.executeUpdate();
+
+                if(rowsUpdated == 0){
+                    conn.rollback();
+                    System.out.println("Sorry, room is no longer available or does not exist.");
+                    return;
+                }else if(rowsUpdated > 0){
+                    System.out.println("Success!");
+                }
             }
+
+            try(PreparedStatement inseStatement = conn.prepareStatement(insertSQL)){
+                inseStatement.setInt(1, roomNumber);
+                //inseStatement.setDate(2, java.sql.Date.valueOf(date));
+                inseStatement.setString(3, fullName);
+
+                //int rowsInserted = inseStatement.executeUpdate();
+                conn.commit();
+                System.out.println("You have succefully made a reservation!");
+            }catch (SQLException e){
+                conn.rollback();
+                throw e;
+            }
+
+        }finally{
+            conn.setAutoCommit(true);
         }
-
-
     }
+
+    
 
    
 }
