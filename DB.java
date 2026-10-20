@@ -2,6 +2,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Scanner;
 import java.sql.ResultSet;
 import java.util.regex.Matcher;
@@ -17,7 +19,7 @@ public class DB {
     private String fullName;
 
     
-    public void selectRoom() {
+    public int selectRoom() {
         Reservation newReservation = new Reservation();
         Scanner scanner = new Scanner(System.in);
 
@@ -27,15 +29,26 @@ public class DB {
 
             while (x) {
                 System.out.println("Please choose the number of the room you would like to book:");
-                roomNumber = scanner.nextInt();
+                int selectedRoom = scanner.nextInt();
 
                 String sql = "SELECT isAvailable FROM rooms WHERE room_id = ?";
 
                 try (PreparedStatement preparedStatement = conn.prepareStatement(sql)) {
 
-                    preparedStatement.setInt(1, roomNumber);
+                    preparedStatement.setInt(1, selectedRoom);
 
                     try (ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                                    /*try (ResultSet rs = ps.executeQuery()) {
+                                        if (!rs.next()) {
+                                            System.out.println("This room does not exist. Try again!");
+                                            continue;
+                                        }
+
+                                        if (rs.getBoolean("isAvailable")) {
+                                            System.out.println("Room is available!");
+                                            return selectedRoom;
+                                        }*/
 
                         if (resultSet.next()) {
                             boolean isAvailable = resultSet.getBoolean("isAvailable");
@@ -43,6 +56,7 @@ public class DB {
                             if (isAvailable) {
                                 System.out.println("Room is available");
                                 x = false;
+                                return selectedRoom;
                             } else {
                                 System.out.println("This room is not available. Please choose another room!");
                             }
@@ -59,34 +73,34 @@ public class DB {
         }
     }
 
-    public void collectUserInfo(){
+    public String collectUserInfo(){
         Scanner scanner = new Scanner(System.in);
         boolean matches = false;
 
         while(!matches){
             System.out.println("Please enter your full name:");
-            fullName = scanner.nextLine().trim();
+            String fullName = scanner.nextLine().trim();
             Pattern pattern = Pattern.compile("[a-zA-Z]+(?:[ '-][a-zA-Z]+)*");
             Matcher matcher = pattern.matcher(fullName);
             matches = matcher.matches();
 
             if(matches){
                 System.out.println("Name accepted!");
-                System.out.println("You have succesfully made reservation! Thank you!");
+                return fullName;
             }else{
                 System.out.println("The name entered in not valid. Try again!");
             }
         }
     }
 
-    public void saveReservation(Connection conn) throws SQLException {
+    public void saveReservation(Connection conn, int roomNumber, String fullName) throws SQLException {
+        LocalDate date = LocalDate.now();
+
         String updateSQL = "UPDATE rooms SET isAvailable = FALSE WHERE room_id = ? AND isAvailable =TRUE";
 
         String insertSQL = "INSERT INTO reservations (room_id, date, full_name) VALUES (?, ?, ?)";
 
-        //conn.setAutoCommit(false);
-
-        //PreparedStatement preparedStatement = conn.prepareStatement(updateSQL);
+        conn.setAutoCommit(false);
 
         try{
             try(PreparedStatement updateStatement = conn.prepareStatement(updateSQL)){
@@ -103,12 +117,12 @@ public class DB {
                 }
             }
 
-            try(PreparedStatement inseStatement = conn.prepareStatement(insertSQL)){
-                inseStatement.setInt(1, roomNumber);
-                //inseStatement.setDate(2, java.sql.Date.valueOf(date));
-                inseStatement.setString(3, fullName);
+            try(PreparedStatement insertStatement = conn.prepareStatement(insertSQL)){
+                insertStatement.setInt(1, roomNumber);
+                insertStatement.setDate(2, java.sql.Date.valueOf(date));
+                insertStatement.setString(3, fullName);
 
-                //int rowsInserted = inseStatement.executeUpdate();
+                int rowsInserted = insertStatement.executeUpdate();
                 conn.commit();
                 System.out.println("You have succefully made a reservation!");
             }catch (SQLException e){
@@ -132,17 +146,17 @@ public class DB {
         String deleteSQL = "DELETE from reservations WHERE roomNumber = ? AND full_name = ?";
         String updateSQL = "UPDATE rooms SET isAvailable = TRUE WHERE room_id = ? AND isAvailable = FALSE";
        
-        PreparedStatement preparedStatement = conn.preparedStatement(deleteSQL);
-        preparedStatement = setInt(1, roomNumber);
-        preparedStatement = setString(2, fullName);
+        //PreparedStatement preparedStatement = conn.preparedStatement(deleteSQL);
+        //preparedStatement = setInt(1, roomNumber);
+        //preparedStatement = setString(2, fullName);
        
-        int rowDeleted = preparedStatement.executeUpdate();
+        //int rowDeleted = preparedStatement.executeUpdate();
        
-        if(rowDeleted > 0){
+        /*if(rowDeleted > 0){
             System.out.println("Your reservation has been cancelled!")
         }else{
             System.out.println("Something went wrong!");
-        }
+        }*/
     }
 
         public void showReservation(Connection conn) throws SQLException{
@@ -158,8 +172,8 @@ public class DB {
         //PreparedStatement preparedStatement = conn.preparedStatement(selectSQL);
         //preparedStatement = setInt(1, roomNumber);
         //preparedStatement = setString(2, fullName);
-        Statement statement = conn.createStatement();
-        ResultSet resultSet = statement.executeQuery(selectSQL);
+        //Statement statement = conn.createStatement();
+        //ResultSet resultSet = statement.executeQuery(selectSQL);
    
         //int rowSelected = preparedStatement.executeQuery();
        
@@ -169,7 +183,7 @@ public class DB {
             System.out.println("This reservation does not exist!")
         }*/
        
-        if(resultSet.next()){
+        /*if(resultSet.next()){
             int roomNumber = resultSet.getInt(1);
             String category = resultSet.getString(2);
             String fullName = resultSet.getString(3);
@@ -177,7 +191,7 @@ public class DB {
             Date date = resultSet.getDate(5);
            
             String output = ""
-        }
+        }*/
        
        
     }
