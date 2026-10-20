@@ -121,6 +121,30 @@ public class DB {
         }
     }
 
+        public void cancelReservation(Connection conn) throws SQLException{
+        Scanner scanner = new Scanner(System.in);
+       
+        System.out.println("Please enter the room number:");
+        int roomNumber = scanner.nextInt();
+        System.out.println("Please enter your full name:");
+        String fullName = scanner.nextLine().trim();
+       
+        String deleteSQL = "DELETE from reservations WHERE roomNumber = ? AND full_name = ?";
+        String updateSQL = "UPDATE rooms SET isAvailable = TRUE WHERE room_id = ? AND isAvailable = FALSE";
+       
+        PreparedStatement preparedStatement = conn.preparedStatement(deleteSQL);
+        preparedStatement = setInt(1, roomNumber);
+        preparedStatement = setString(2, fullName);
+       
+        int rowDeleted = preparedStatement.executeUpdate();
+       
+        if(rowDeleted > 0){
+            System.out.println("Your reservation has been cancelled!")
+        }else{
+            System.out.println("Something went wrong!");
+        }
+    }
+
     
 
    
