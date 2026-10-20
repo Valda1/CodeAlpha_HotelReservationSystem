@@ -145,6 +145,43 @@ public class DB {
         }
     }
 
+        public void showReservation(Connection conn) throws SQLException{
+        Scanner scanner = new Scanner(System.in);
+       
+        System.out.println("Please enter the room number:");
+        int roomNumber = scanner.nextInt();
+        System.out.println("Please enter your full name:");
+        String fullName = scanner.nextLine().trim();
+       
+        String selectSQL = "SELECT from reservations WHERE room_id = ? AND full_name =?";
+       
+        //PreparedStatement preparedStatement = conn.preparedStatement(selectSQL);
+        //preparedStatement = setInt(1, roomNumber);
+        //preparedStatement = setString(2, fullName);
+        Statement statement = conn.createStatement();
+        ResultSet resultSet = statement.executeQuery(selectSQL);
+   
+        //int rowSelected = preparedStatement.executeQuery();
+       
+        /*if(rowSelected > 0){
+            System.out.println();
+        }else{
+            System.out.println("This reservation does not exist!")
+        }*/
+       
+        if(resultSet.next()){
+            int roomNumber = resultSet.getInt(1);
+            String category = resultSet.getString(2);
+            String fullName = resultSet.getString(3);
+            float price = resultSet.getFloat(4);
+            Date date = resultSet.getDate(5);
+           
+            String output = ""
+        }
+       
+       
+    }
+
     
 
    
