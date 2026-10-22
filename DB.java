@@ -18,8 +18,40 @@ public class DB {
     private int roomNumber;
     private String fullName;
 
+    public int selectRoom() throws SQLException {
+    Scanner scanner = new Scanner(System.in);
+
+    try (Connection conn = DriverManager.getConnection(dbURL, user, password)) {
+        while (true) {
+            System.out.println("Please choose the number of the room you would like to book:");
+            int selectedRoom = scanner.nextInt();
+
+            String sql = "SELECT isAvailable FROM rooms WHERE room_id = ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, selectedRoom);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        boolean isAvailable = rs.getBoolean("isAvailable");
+
+                        if (isAvailable) {
+                            System.out.println("Room is available!");
+                            return selectedRoom;
+                        } else {
+                            System.out.println("This room is not available. Try again!");
+                        }
+                    } else {
+                        System.out.println("This room does not exist. Try again!");
+                    }
+                }
+            }
+        }
+    }
+}
+
     
-    public int selectRoom() {
+    /*public int selectRoom1() {
         Reservation newReservation = new Reservation();
         Scanner scanner = new Scanner(System.in);
 
@@ -39,7 +71,7 @@ public class DB {
 
                     try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
-                                    /*try (ResultSet rs = ps.executeQuery()) {
+                                    try (ResultSet rs = ps.executeQuery()) {
                                         if (!rs.next()) {
                                             System.out.println("This room does not exist. Try again!");
                                             continue;
@@ -48,7 +80,7 @@ public class DB {
                                         if (rs.getBoolean("isAvailable")) {
                                             System.out.println("Room is available!");
                                             return selectedRoom;
-                                        }*/
+                                        }
 
                         if (resultSet.next()) {
                             boolean isAvailable = resultSet.getBoolean("isAvailable");
@@ -71,20 +103,18 @@ public class DB {
         } catch (SQLException e) {
             System.out.println("Something went wrong! " + e.getMessage());
         }
-    }
+    }*/
 
     public String collectUserInfo(){
         Scanner scanner = new Scanner(System.in);
-        boolean matches = false;
 
-        while(!matches){
+        while(true){
             System.out.println("Please enter your full name:");
             String fullName = scanner.nextLine().trim();
             Pattern pattern = Pattern.compile("[a-zA-Z]+(?:[ '-][a-zA-Z]+)*");
             Matcher matcher = pattern.matcher(fullName);
-            matches = matcher.matches();
 
-            if(matches){
+            if(matcher.matches()){
                 System.out.println("Name accepted!");
                 return fullName;
             }else{
