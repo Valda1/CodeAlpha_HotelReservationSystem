@@ -196,6 +196,23 @@ public class DB {
        
     }
 
+    public void makeReservation(){
+        try(Connection conn = DriverManager.getConnection(dbURL, user, password)){
+            Scanner scanner = new Scanner(System.in);
+
+            //int selectRoom = selectRoom(conn, scanner);
+            int selectRoom = selectRoom();
+
+            //String customerName = collectUserInfo(scanner);
+            String customerName = collectUserInfo();
+
+            saveReservation(conn, selectRoom, customerName);
+
+        }catch(SQLException e){
+            System.out.println("Reservation failed: " + e.getMessage());
+        }
+    }
+
     
 
    
