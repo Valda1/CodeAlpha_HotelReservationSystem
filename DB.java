@@ -170,24 +170,32 @@ public class DB {
                 System.out.println("Please enter your reservation ID:");
                 int reservationID = scanner.nextInt();
 
-                String deleteSQL = "DELETE FROM reservations WHERE room_id = ?";
-                String updateSQL = "UPDATE rooms SET isAvailable = TRUE WHERE room_id = ? AND isAvailable = FALSE";
+                //conn.setAutoCommit(false);
 
-                /*System.out.println("Please enter the room number:");
-                int roomNumber = scanner.nextInt();
-                System.out.println("Please enter your full name:");
-                String fullName = scanner.nextLine().trim();
+                String selectSQL = "SELECT room_num FROM reservations WHERE reservation_id = ?";
+                String deleteSQL = "DELETE FROM reservations WHERE reservation_id = ?";
+                //String updateSQL = "UPDATE rooms JOIN reservations ON rooms.room_id = reservations.room_num SET rooms is_available = TRUE WHERE reservations.room_num = ? AND is_available = FALSE";
+                String updateSQL = "UPDATE rooms SET is_available = TRUE WHERE room_id = ? AND is_available = FALSE";
 
-                String deleteSQL = "DELETE from reservations WHERE room_id = ? AND full_name = ?";
-                String updateSQL = "UPDATE rooms SET isAvailable = TRUE WHERE room_id = ? AND isAvailable = FALSE";*/
+                PreparedStatement ps1 = conn.prepareStatement(deleteSQL);
+                ps1.setInt(1, reservationID);
 
-                PreparedStatement ps = conn.prepareStatement(deleteSQL);
-                ps.setInt(1, reservationID);
-
-                int rowDeleted = ps.executeUpdate();
+                int rowDeleted = ps1.executeUpdate();
 
                 if(rowDeleted > 0){
                     System.out.println("Your reservation has been cancelled!");
+
+                    int roomNumber;
+
+                    PreparedStatement ps2 = conn.prepareStatement(selectSQL);
+                    ResultSet rs = ps2.executeQuery();
+
+                    if(rs.next()){
+                        
+                    }
+
+                    PreparedStatement ps3 = conn.prepareStatement(updateSQL);
+                    ps3.setInt(1, roomNumber);
                 }else{
                     System.out.println("Something went wrong!");
                 }
