@@ -163,29 +163,38 @@ public class DB {
         }
     }
 
-        public void cancelReservation(Connection conn) throws SQLException{
-        Scanner scanner = new Scanner(System.in);
-       
-        System.out.println("Please enter the room number:");
-        int roomNumber = scanner.nextInt();
-        System.out.println("Please enter your full name:");
-        String fullName = scanner.nextLine().trim();
-       
-        String deleteSQL = "DELETE from reservations WHERE roomNumber = ? AND full_name = ?";
-        String updateSQL = "UPDATE rooms SET isAvailable = TRUE WHERE room_id = ? AND isAvailable = FALSE";
-    
-       
-        //PreparedStatement preparedStatement = conn.preparedStatement(deleteSQL);
-        //preparedStatement = setInt(1, roomNumber);
-        //preparedStatement = setString(2, fullName);
-       
-        //int rowDeleted = preparedStatement.executeUpdate();
-       
-        /*if(rowDeleted > 0){
-            System.out.println("Your reservation has been cancelled!")
-        }else{
-            System.out.println("Something went wrong!");
-        }*/
+        public void cancelReservation(){
+            try(Connection conn = DriverManager.getConnection(dbURL, user, password)){
+                Scanner scanner = new Scanner(System.in);
+
+                System.out.println("Please enter your reservation ID:");
+                int reservationID = scanner.nextInt();
+
+                String deleteSQL = "DELETE FROM reservations WHERE room_id = ?";
+                String updateSQL = "UPDATE rooms SET isAvailable = TRUE WHERE room_id = ? AND isAvailable = FALSE";
+
+                /*System.out.println("Please enter the room number:");
+                int roomNumber = scanner.nextInt();
+                System.out.println("Please enter your full name:");
+                String fullName = scanner.nextLine().trim();
+
+                String deleteSQL = "DELETE from reservations WHERE room_id = ? AND full_name = ?";
+                String updateSQL = "UPDATE rooms SET isAvailable = TRUE WHERE room_id = ? AND isAvailable = FALSE";*/
+
+                PreparedStatement ps = conn.prepareStatement(deleteSQL);
+                ps.setInt(1, reservationID);
+
+                int rowDeleted = ps.executeUpdate();
+
+                if(rowDeleted > 0){
+                    System.out.println("Your reservation has been cancelled!");
+                }else{
+                    System.out.println("Something went wrong!");
+                }
+
+            }catch(SQLException e){
+                System.out.println("Something went wrong: " + e);
+            }
     }
 
         public void showReservation(){
