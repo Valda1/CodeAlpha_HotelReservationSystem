@@ -15,8 +15,6 @@ public class DB {
     final String user = "root";
     final String password = "root";
 
-    private int roomNumber;
-    private String fullName;
 
     public int selectRoom() throws SQLException {
     Scanner scanner = new Scanner(System.in);
@@ -175,6 +173,7 @@ public class DB {
        
         String deleteSQL = "DELETE from reservations WHERE roomNumber = ? AND full_name = ?";
         String updateSQL = "UPDATE rooms SET isAvailable = TRUE WHERE room_id = ? AND isAvailable = FALSE";
+    
        
         //PreparedStatement preparedStatement = conn.preparedStatement(deleteSQL);
         //preparedStatement = setInt(1, roomNumber);
@@ -189,51 +188,48 @@ public class DB {
         }*/
     }
 
-        public void showReservation(Connection conn) throws SQLException{
-        Scanner scanner = new Scanner(System.in);
+        public void showReservation(){
+            try(Connection conn = DriverManager.getConnection(dbURL, user, password)){
+                Scanner scanner = new Scanner(System.in);
+                System.out.println("Please enter the ID number of your reservation:");
+                int reservationID = scanner.nextInt();
+
+                String selectSQL = "SELECT room_id, date, full_name from reservations WHERE reservation_id = ?";
+
+                /*System.out.println("Please enter the room number:");
+                int roomNumber = scanner.nextInt();
+                System.out.println("Please enter your full name:");
+                String fullName = scanner.nextLine().trim();
        
-        System.out.println("Please enter the room number:");
-        int roomNumber = scanner.nextInt();
-        System.out.println("Please enter your full name:");
-        String fullName = scanner.nextLine().trim();
-       
-        String selectSQL = "SELECT from reservations WHERE room_id = ? AND full_name =?";
-       
-        //PreparedStatement preparedStatement = conn.preparedStatement(selectSQL);
-        //preparedStatement = setInt(1, roomNumber);
-        //preparedStatement = setString(2, fullName);
-        //Statement statement = conn.createStatement();
-        //ResultSet resultSet = statement.executeQuery(selectSQL);
-   
-        //int rowSelected = preparedStatement.executeQuery();
-       
-        /*if(rowSelected > 0){
-            System.out.println();
-        }else{
-            System.out.println("This reservation does not exist!")
-        }*/
-       
-        /*if(resultSet.next()){
-            int roomNumber = resultSet.getInt(1);
-            String category = resultSet.getString(2);
-            String fullName = resultSet.getString(3);
-            float price = resultSet.getFloat(4);
-            Date date = resultSet.getDate(5);
-           
-            String output = ""
-        }*/
-       
-       
+                String selectSQL = "SELECT from reservations WHERE room_id = ? AND full_name =?";*/
+
+                PreparedStatement ps = conn.prepareStatement(selectSQL);
+                ps.setInt(1, reservationID);
+                ResultSet rs = ps.executeQuery();
+
+                if(rs.next()){
+                    int roomNumber = rs.getInt(1);
+                    Date date = rs.getDate(2);
+                    //String date = rs.getString(2);
+                    String fullName = rs.getString(3);
+
+                    String output = "Reservation info: \n\t reservation_id: %d \n\t room_id: %d \n\t date: %s \n\t full_name: %s";
+
+                    System.out.println(String.format(output, reservationID, roomNumber, date, fullName));
+                }else{
+                    System.out.println("Reservation does not exist!");
+                }
+
+            }catch (SQLException e){
+                System.out.println("Something went wrong: " + e);
+
+            }      
     }
 
     public void makeReservation(){
         try(Connection conn = DriverManager.getConnection(dbURL, user, password)){
-            Scanner scanner = new Scanner(System.in);
 
-            //int selectRoom = selectRoom(conn, scanner);
             int selectRoom = selectRoom();
-
-            //String customerName = collectUserInfo(scanner);
             String customerName = collectUserInfo();
 
             saveReservation(conn, selectRoom, customerName);
