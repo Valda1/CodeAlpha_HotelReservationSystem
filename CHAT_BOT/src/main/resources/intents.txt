@@ -1,0 +1,25 @@
+greeting Hello
+greeting Hi
+greeting Hey
+greeting Good morning
+greeting Good evening
+
+shipping Where is my order?
+shipping How much does delivery cost?
+shipping How long does delivery take?
+shipping When will my package arrive?
+shipping Do you ship internationally?
+
+returns How can I return a product?
+returns What is your return policy?
+returns I want to return my order
+returns My order arrived damaged
+
+refund Can I get a refund?
+refund I want a refund
+refund Can I get my money back?
+
+products What products do you sell?
+products Do you have this item in stock?
+products I want to know more about a product
+products Where can I find product details?
