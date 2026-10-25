@@ -1,0 +1,5 @@
+greeting=Hello! Welcome to our online store. How can I help you?
+shipping=Delivery times and costs depend on your location and selected shipping method. Please check the shipping information on our website.
+returns=Please review our store's return policy for eligibility, deadlines, and instructions.
+products=I can help you with product information. Please tell me which product you are interested in.
+fallback=Sorry, I am not sure about that. Could you rephrase your question or contact our support team?
